@@ -1,0 +1,1 @@
+[A,R] = geotiffread('../images/RGB_SENTINEL_EPSG6372_2020_ORIGINAL_470m Part0.tif');

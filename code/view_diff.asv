@@ -1,0 +1,137 @@
+classdef view_diff
+    properties
+
+    end
+
+    methods
+
+
+         function     saveFigure(obj, xlab, ylab,zlab, btitle, fn_out)
+            %black background
+            ds = 4;
+            bb = 0; %black background
+            if bb == 0
+                fg = 'w'; bg = 'k';
+                fg_vec = [0,0,0]; bg_vec = [1,1,1];
+                %large font size
+                %set(gca, 'FontSize', 14)
+            else
+                fg = 'k'; bg = 'w';
+                fg_vec = [1,1,1]; bg_vec = [0,0,0];
+
+            end
+
+            %labels using the LaTeX interpreter
+            xlabel(xlab,  'Interpreter','LaTex','FontSize', 14+ds,'color',fg)
+            ylabel(ylab,  'Interpreter','LaTex','FontSize', 14+ds,'color',fg)
+            zlabel(zlab,  'Interpreter','LaTex','FontSize', 14+ds,'color',fg)
+            sgtitle(btitle,  'Interpreter','LaTex','FontSize', 17+ds,'color',fg)
+
+            set(gcf,'Color',fg_vec); % color of the frame around the figure
+            set(gca,'Color',bg)%color for the plot area
+            set(gca,'XColor',bg_vec); % Set RGB value to what you want
+            set(gca,'YColor',bg_vec); % Set RGB value to what you want
+            set(gca,'ZColor',bg_vec); % Set RGB value to what you want
+
+            %save the figure
+            F = getframe(gcf);
+            im = frame2im(F);
+
+            imwrite(im,fn_out);
+         end
+
+
+        function view(obj)
+
+data = readtable('../data/itur_difference_regression_dataset.csv');
+% Display the first few rows of the data
+%head(data);
+
+y = data.diff(:);
+
+figure(1)
+clf
+plot(sort(abs(y)),'.g')
+box on
+
+% Create inset axes
+ax2 = axes('Position',[0.2 0.2 0.6 0.6]);  % [left bottom width height]
+plot(ax2, sort(abs(y)),'.r')
+%axis([13.4e4,135e4,0,0.1])
+box(ax2,'on')
+
+obj.saveFigure('observaciones', 'diferencias', '', 'diferencias ordenadas', '../figures/ordered_diff.png')
+thr = 0.0025;
+indx = find(abs(y) > thr);
+disp(length(indx))
+
+figure(1)
+clf
+histogram(data.hat_P_USOSUEPV,40,'Normalization','pdf')
+hold on
+histogram(data.hat_P_USOSUEPV(indx),40,'Normalization','pdf')
+hold off
+
+
+
+figure(2)
+clf
+histogram(data.hat_COND_ACCE,40,'Normalization','pdf')
+hold on
+histogram(data.hat_COND_ACCE(indx),40,'Normalization','pdf')
+hold off
+
+
+figure(3)
+clf
+histogram(data.hat_P_USOSUECON,40,'Normalization','pdf')
+hold on
+histogram(data.hat_P_USOSUECON(indx),40,'Normalization','pdf')
+hold off
+
+
+figure(4)
+clf
+histogram(data.hat_EQUIP_URB,40,'Normalization','pdf')
+hold on
+histogram(data.hat_EQUIP_URB(indx),40,'Normalization','pdf')
+hold off
+
+
+figure(5)
+clf
+histogram(data.hat_DILOCCON50,40,'Normalization','pdf')
+hold on
+histogram(data.hat_DILOCCON50(indx),40,'Normalization','pdf')
+hold off
+
+
+figure(6)
+clf
+histogram(data.hat_TAM_POB,40,'Normalization','pdf')
+hold on
+histogram(data.hat_TAM_POB(indx),40,'Normalization','pdf')
+hold off
+
+figure(7)
+clf
+histogram(data.hat_DEN_POB,40,'Normalization','pdf')
+hold on
+histogram(data.hat_DEN_POB(indx),40,'Normalization','pdf')
+hold off
+
+figure(8)
+clf
+histogram(data.hat_CAR_SER_VI,40,'Normalization','pdf')
+hold on
+histogram(data.hat_CAR_SER_VI(indx),40,'Normalization','pdf')
+hold off
+
+
+
+
+
+
+        end
+    end
+end
